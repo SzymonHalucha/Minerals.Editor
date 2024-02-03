@@ -3,11 +3,6 @@ namespace Minerals.Editor.Builders
     public class EditorWindowBuilder : IEditorWindowBuilder
     {
         private IEditorWindow? _target;
-        private EditorWindow? _header;
-        private EditorWindow? _closer;
-        private EditorWindow? _resizer;
-        private EditorWindow? _resizerHorizontal;
-        private EditorWindow? _resizerVertical;
 
         public IEditorWindowBuilder CreateNew()
         {
@@ -17,169 +12,259 @@ namespace Minerals.Editor.Builders
         public IEditorWindowBuilder BuildForReference(IEditorWindow target)
         {
             _target = target;
-            _target.AddCssClass("editor-window");
-            CreateDefaultStateIfDoesntExist();
             return this;
         }
 
-        public IEditorWindowBuilder SetRoot(IEditorWindow root)
+        public IEditorWindowBuilder AddComponent<T>(out T component)
+            where T : class, IEditorComponent, new()
         {
-            _target!.SetRoot(root);
+            component = _target!.AddOrGetComponent<T>();
             return this;
         }
 
-        public IEditorWindowBuilder SetParameters(string? tag = null, string? id = null, string? title = null)
+        public IEditorWindowBuilder AddDefaultStyle()
+        {
+            EditorComponentStyles styles = _target!.GetComponent<EditorComponentStyles>()!;
+            styles.AddClass(ThemeComponents.EditorComponent);
+            styles.AddClass(ThemeComponents.WindowComponent);
+            return this;
+        }
+
+        public IEditorWindowBuilder AddDefaultState()
+        {
+            EditorComponentStates states = _target!.GetComponent<EditorComponentStates>()!;
+            states.AddState<EditorStateNormal>();
+            states.ChangeState<EditorStateNormal, EditorStateNormal>();
+            return this;
+        }
+
+        public IEditorWindowBuilder AddMovableFeature(IEditorWindow moveComponent)
+        {
+            EditorComponentStates states = _target!.GetComponent<EditorComponentStates>()!;
+            states.AddState<EditorStateMoving>
+            (
+                stateArgs: [new EditorArgsEventSource { Source = _target!.Parent! }]
+            );
+            states.AddTransition<EditorTransitionOnMouseDown<EditorStateNormal, EditorStateMoving>>
+            (
+                transitionArgs: [new EditorArgsEventSource { Source = moveComponent }],
+                enterStateArgs: [new EditorArgsIgnoreEvents()]
+            );
+            AddExitTransitions<EditorStateMoving>();
+            return this;
+        }
+
+        public IEditorWindowBuilder AddClosableFeature(IEditorWindow closeComponent)
+        {
+            AddEnterStateAndTransition<EditorStateClosed>(closeComponent);
+            return this;
+        }
+
+        public IEditorWindowBuilder AddResizableFeature(IEditorWindow resizeComponent)
+        {
+            AddEnterStateAndTransition<EditorStateResizing>(resizeComponent);
+            AddExitTransitions<EditorStateResizing>();
+            return this;
+        }
+
+        public IEditorWindowBuilder AddVerticalResizableFeature(IEditorWindow verticalResizeComponent)
+        {
+            AddEnterStateAndTransition<EditorStateVerticalResizing>(verticalResizeComponent);
+            AddExitTransitions<EditorStateVerticalResizing>();
+            return this;
+        }
+
+        public IEditorWindowBuilder AddHorizontalResizableFeature(IEditorWindow horizontalResizeComponent)
+        {
+            AddEnterStateAndTransition<EditorStateHorizontalResizing>(horizontalResizeComponent);
+            AddExitTransitions<EditorStateHorizontalResizing>();
+            return this;
+        }
+
+        public IEditorWindowBuilder AddSnappableFeature()
+        {
+            throw new NotImplementedException();
+        }
+
+        public IEditorWindowBuilder AddScrollableFeature()
+        {
+            throw new NotImplementedException();
+        }
+
+        public IEditorWindowBuilder AddClasses(string? classes)
+        {
+            if (classes != null)
+            {
+                StringSplitOptions splitOptions = StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries;
+                string[] list = classes.Split(separator: ' ', options: splitOptions);
+
+                EditorComponentStyles styles = _target!.GetComponent<EditorComponentStyles>()!;
+                foreach (var cls in list)
+                {
+                    styles.AddClass(cls);
+                }
+            }
+            return this;
+        }
+
+        public IEditorWindowBuilder SetTransform(EditorTransform? transform)
+        {
+            if (transform != null)
+            {
+                _target!.Transform = transform;
+            }
+            return this;
+        }
+
+        public IEditorWindowBuilder SetParent(IEditorWindow? parent)
+        {
+            parent?.AddChild(_target!);
+            return this;
+        }
+
+        public IEditorWindowBuilder SetThemes(IEditorThemes? themes)
+        {
+            if (themes != null)
+            {
+                EditorComponentThemes component = _target!.GetComponent<EditorComponentThemes>()!;
+                component.SetThemes(themes);
+            }
+            return this;
+        }
+
+        public IEditorWindowBuilder SetTag(string? tag)
         {
             if (tag != null)
             {
-                _target!.SetTag(tag);
+                _target!.Tag = tag;
             }
-
-            if (id != null)
-            {
-                _target!.SetId(id);
-            }
-
-            if (title != null)
-            {
-                _target!.SetTitle(title);
-            }
-
             return this;
         }
 
-        public IEditorWindowBuilder SetPositionAndSize(Point2D position, Point2D size)
+        public IEditorWindowBuilder SetId(string? id)
         {
-            _target!.Position = position;
-            _target!.Size = size;
+            _target!.Id = id;
             return this;
         }
 
-        public IEditorWindowBuilder AddCloseFeature()
+        public EditorWindow Build()
         {
-            _closer = CreateDefaultComponent("editor-window-closer");
-            AddDefaultEnterStatesAndTransitions<EditorStateClose>(_closer);
-            return this;
+            _target!.Enable = true;
+            return (EditorWindow)_target;
         }
 
-        public IEditorWindowBuilder AddSnapFeature(IEditorWindow[] snappers)
+        private void AddEnterStateAndTransition<T>(IEditorWindow source) where T : IEditorState, new()
         {
-            _target!.AddState<EditorStateSnapped>([new EditorArgsEventSource(_target!.Root!)]);
-            foreach (var item in snappers)
-            {
-                _target.AddTransition<EditorTransitionOnMouseEnter<EditorStateMove, EditorStateSnapped>>
-                (
-                    transitionArgs: [new EditorArgsEventSource(item)],
-                    enterStateArgs: [new EditorArgsSnapArea(item)]
-                );
-                _target.AddTransition<EditorTransitionOnMouseLeave<EditorStateSnapped, EditorStateMove>>
-                (
-                    transitionArgs: [new EditorArgsEventSource(item)],
-                    exitStateArgs: [new EditorArgsSaveTransform()]
-                );
-            }
-            AddDefaultExitStatesAndTransitions<EditorStateSnapped>();
-            return this;
-        }
-
-        public IEditorWindowBuilder AddMoveFeature()
-        {
-            _header = CreateDefaultHeaderComponent();
-            _target!.AddState<EditorStateMove>([new EditorArgsEventSource(_target!.Root!)]);
-            _target.AddTransition<EditorTransitionOnMouseDown<EditorStateNormal, EditorStateMove>>
+            EditorComponentStates states = _target!.GetComponent<EditorComponentStates>()!;
+            states.AddState<T>
             (
-                transitionArgs: [new EditorArgsEventSource(_header!)],
-                enterStateArgs: [new EditorArgsIgnoreEvents()]
+                stateArgs: [new EditorArgsEventSource { Source = _target.Parent }]
             );
-            AddDefaultExitStatesAndTransitions<EditorStateMove>();
-            return this;
-        }
-
-        public IEditorWindowBuilder AddResizeFeature()
-        {
-            _resizer = CreateDefaultComponent("editor-window-resizer");
-            AddDefaultEnterStatesAndTransitions<EditorStateResize>(_resizer);
-            AddDefaultExitStatesAndTransitions<EditorStateResize>();
-            return this;
-        }
-
-        public IEditorWindowBuilder AddResizeHorizontalFeature()
-        {
-            _resizerHorizontal = CreateDefaultComponent("editor-window-resizer-horizontal");
-            AddDefaultEnterStatesAndTransitions<EditorStateResizeHorizontal>(_resizerHorizontal);
-            AddDefaultExitStatesAndTransitions<EditorStateResizeHorizontal>();
-            return this;
-        }
-
-        public IEditorWindowBuilder AddResizeVerticalFeature()
-        {
-            _resizerVertical = CreateDefaultComponent("editor-window-resizer-vertical");
-            AddDefaultEnterStatesAndTransitions<EditorStateResizeVertical>(_resizerVertical);
-            AddDefaultExitStatesAndTransitions<EditorStateResizeVertical>();
-            return this;
-        }
-
-        public IEditorWindow Build()
-        {
-            return _target!;
-        }
-
-        private void CreateDefaultStateIfDoesntExist()
-        {
-            if (!_target!.HasState<EditorStateNormal>())
-            {
-                _target.AddState<EditorStateNormal>();
-                _target.ChangeState<EditorStateNormal>();
-            }
-        }
-
-        private EditorWindow CreateDefaultHeaderComponent()
-        {
-            EditorWindow window = new();
-            window.AddCssClass("editor-window-header")
-            .SetTag("div")
-            .SetChildContent(builder =>
-            {
-                builder.OpenElement(1, "h2");
-                builder.AddContent(2, _target!.Title);
-                builder.CloseElement();
-            });
-            _target!.AddChildWindow(window);
-            return window;
-        }
-
-        private EditorWindow CreateDefaultComponent(string cssClassName)
-        {
-            EditorWindow window = new();
-            window.AddCssClass(cssClassName)
-            .SetTag("div");
-            _target!.AddChildWindow(window);
-            return window;
-        }
-
-        private void AddDefaultEnterStatesAndTransitions<T>(IEditorWindow activator)
-            where T : IEditorState, new()
-        {
-            _target!.AddState<T>([new EditorArgsEventSource(_target!.Root!)]);
-            _target!.AddTransition<EditorTransitionOnMouseDown<EditorStateNormal, T>>
+            states.AddTransition<EditorTransitionOnMouseDown<EditorStateNormal, T>>
             (
-                transitionArgs: [new EditorArgsEventSource(activator)]
+                transitionArgs: [new EditorArgsEventSource { Source = source }]
             );
         }
 
-        private void AddDefaultExitStatesAndTransitions<T>()
-            where T : IEditorState, new()
+        private void AddExitTransitions<T>() where T : IEditorState, new()
         {
-            _target!.AddTransition<EditorTransitionOnMouseUp<T, EditorStateNormal>>
+            EditorComponentStates states = _target!.GetComponent<EditorComponentStates>()!;
+            states.AddTransition<EditorTransitionOnMouseUp<T, EditorStateNormal>>
             (
-                transitionArgs: [new EditorArgsEventSource(_target!.Root!)],
+                transitionArgs: [new EditorArgsEventSource { Source = _target.Parent }],
                 exitStateArgs: [new EditorArgsSaveTransform()]
             );
-            _target!.AddTransition<EditorTransitionOnMouseLeave<T, EditorStateNormal>>
+            states.AddTransition<EditorTransitionOnMouseLeave<T, EditorStateNormal>>
             (
-                transitionArgs: [new EditorArgsEventSource(_target!.Root!)],
-                exitStateArgs: [new EditorArgsSaveTransform(false)]
+                transitionArgs: [new EditorArgsEventSource { Source = _target.Parent }]
             );
+        }
+
+        public static EditorWindow BuildHeaderWindow(IEditorWindow? parent)
+        {
+            EditorPoint position = new(0, 0);
+            EditorPoint size = new(100, 32, EditorUnit.Percent, EditorUnit.Pixel);
+            EditorAnchor anchor = EditorAnchor.Top | EditorAnchor.Left;
+            EditorTransform transform = new(size, position, anchor);
+            return CreateEventBaseComponent
+            (
+                transform,
+                parent,
+                ThemeComponents.HeaderComponent
+            ).Build();
+        }
+
+        public static EditorWindow BuildCloseWindow(IEditorWindow? parent)
+        {
+            EditorPoint position = new(0, 0);
+            EditorPoint size = new(32, 32);
+            EditorAnchor anchor = EditorAnchor.Top | EditorAnchor.Right;
+            EditorTransform transform = new(size, position, anchor);
+            return CreateEventBaseComponent
+            (
+                transform,
+                parent,
+                ThemeComponents.CloseComponent
+            ).Build();
+        }
+
+        public static EditorWindow BuildResizeWindow(IEditorWindow? parent)
+        {
+            EditorPoint position = new(0, 0);
+            EditorPoint size = new(16, 16);
+            EditorAnchor anchor = EditorAnchor.Bottom | EditorAnchor.Right;
+            EditorTransform transform = new(size, position, anchor);
+            return CreateEventBaseComponent
+            (
+                transform,
+                parent,
+                ThemeComponents.ResizeComponent
+            ).Build();
+        }
+
+        public static EditorWindow BuildVerticalResizeWindow(IEditorWindow? parent)
+        {
+            EditorPoint position = new(0, 0);
+            EditorPoint size = new(80, 16, EditorUnit.Percent, EditorUnit.Pixel);
+            EditorAnchor anchor = EditorAnchor.Bottom | EditorAnchor.Right | EditorAnchor.Left;
+            EditorTransform transform = new(size, position, anchor);
+            return CreateEventBaseComponent
+            (
+                transform,
+                parent,
+                ThemeComponents.VerticalResizeComponent
+            ).Build();
+        }
+
+        public static EditorWindow BuildHorizontalResizeWindow(IEditorWindow? parent)
+        {
+            EditorPoint position = new(0, 0);
+            EditorPoint size = new(16, 80, EditorUnit.Pixel, EditorUnit.Percent);
+            EditorAnchor anchor = EditorAnchor.Bottom | EditorAnchor.Top | EditorAnchor.Right;
+            EditorTransform transform = new(size, position, anchor);
+            return CreateEventBaseComponent
+            (
+                transform,
+                parent,
+                ThemeComponents.HorizontalResizeComponent
+            ).Build();
+        }
+
+        private static EditorWindowBuilder CreateEventBaseComponent
+        (
+            EditorTransform transform,
+            IEditorWindow? parent = null,
+            string? classes = null
+        )
+        {
+            return (EditorWindowBuilder)new EditorWindowBuilder()
+                .CreateNew()
+                .SetParent(parent)
+                .SetTransform(transform)
+                .AddComponent<EditorComponentEvents>(out _)
+                .AddComponent<EditorComponentStyles>(out _)
+                .AddClasses(classes)
+                .AddDefaultStyle();
         }
     }
 }

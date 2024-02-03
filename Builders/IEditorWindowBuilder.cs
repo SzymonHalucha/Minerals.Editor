@@ -4,15 +4,27 @@ namespace Minerals.Editor.Builders
     {
         public IEditorWindowBuilder CreateNew();
         public IEditorWindowBuilder BuildForReference(IEditorWindow target);
-        public IEditorWindowBuilder SetRoot(IEditorWindow root);
-        public IEditorWindowBuilder SetParameters(string? tag = null, string? id = null, string? title = null);
-        public IEditorWindowBuilder SetPositionAndSize(Point2D position, Point2D size);
-        public IEditorWindowBuilder AddCloseFeature();
-        public IEditorWindowBuilder AddSnapFeature(IEditorWindow[] snappers);
-        public IEditorWindowBuilder AddMoveFeature();
-        public IEditorWindowBuilder AddResizeFeature();
-        public IEditorWindowBuilder AddResizeHorizontalFeature();
-        public IEditorWindowBuilder AddResizeVerticalFeature();
-        public IEditorWindow Build();
+        public IEditorWindowBuilder AddComponent<T>(out T component) where T : class, IEditorComponent, new();
+        public IEditorWindowBuilder AddDefaultStyle();
+        public IEditorWindowBuilder AddDefaultState();
+        public IEditorWindowBuilder AddMovableFeature(IEditorWindow moveComponent);
+        public IEditorWindowBuilder AddClosableFeature(IEditorWindow closeComponent);
+        public IEditorWindowBuilder AddResizableFeature(IEditorWindow resizeComponent);
+        public IEditorWindowBuilder AddVerticalResizableFeature(IEditorWindow verticalResizeComponent);
+        public IEditorWindowBuilder AddHorizontalResizableFeature(IEditorWindow horizontalResizeComponent);
+        public IEditorWindowBuilder AddSnappableFeature();
+        public IEditorWindowBuilder AddScrollableFeature();
+        public IEditorWindowBuilder AddClasses(string? classes);
+        public IEditorWindowBuilder SetTransform(EditorTransform? transform);
+        public IEditorWindowBuilder SetParent(IEditorWindow? parent);
+        public IEditorWindowBuilder SetThemes(IEditorThemes? themes);
+        public IEditorWindowBuilder SetTag(string? tag);
+        public IEditorWindowBuilder SetId(string? id);
+        public EditorWindow Build();
+        public static abstract EditorWindow BuildHeaderWindow(IEditorWindow? parent);
+        public static abstract EditorWindow BuildCloseWindow(IEditorWindow? parent);
+        public static abstract EditorWindow BuildResizeWindow(IEditorWindow? parent);
+        public static abstract EditorWindow BuildVerticalResizeWindow(IEditorWindow? parent);
+        public static abstract EditorWindow BuildHorizontalResizeWindow(IEditorWindow? parent);
     }
 }

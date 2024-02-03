@@ -3,60 +3,19 @@ namespace Minerals.Editor
     public class EditorWindow : ComponentBase, IEditorWindow
     {
         [Parameter] public RenderFragment? ChildContent { get; set; }
+        public string? Id { get; set; }
+        public string Tag { get; set; } = "div";
 
-        [Parameter] public string Tag { get; set; } = "div";
-        [Parameter] public string? Id { get; set; }
-        [Parameter] public string? Class { get; set; }
-        [Parameter] public string? Title { get; set; }
-
-        public IEditorWindow? Root { get; set; }
+        public EditorTransform Transform { get; set; } = new();
         public IEditorWindow? Parent { get; set; }
+        public bool Enable { get; set; } = false;
 
-        public Point2D Position
-        {
-            get
-            {
-                return _position;
-            }
-            set
-            {
-                _position = value;
-                SetCssStyle("left", $"{_position.X}px");
-                SetCssStyle("top", $"{_position.Y}px");
-            }
-        }
-
-        public Point2D Size
-        {
-            get
-            {
-                return _size;
-            }
-            set
-            {
-                _size = value;
-                SetCssStyle("width", $"{_size.Width}px");
-                SetCssStyle("height", $"{_size.Height}px");
-            }
-        }
-
-        public bool Enabled { get; set; } = true;
-
-        private readonly Dictionary<string, string> _styles = [];
-        private readonly List<string> _classes = [];
         private readonly List<IEditorWindow> _children = [];
-        private readonly List<IEditorEvent<MouseEventArgs>> _mouseEvents = [];
-        private readonly List<IEditorTransition> _transitions = [];
-        private readonly List<IEditorState> _states = [];
-        private IEditorState? _currentState;
-
-        private bool _instancedFromCode = false;
-        private Point2D _position = new(0, 0);
-        private Point2D _size = new(100, 100);
+        private readonly List<IEditorComponent> _components = [];
 
         protected override void BuildRenderTree(RenderTreeBuilder builder)
         {
-            if (Enabled && !_instancedFromCode)
+            if (Enable && Parent == null)
             {
                 BuildTree(builder);
             }
@@ -65,235 +24,134 @@ namespace Minerals.Editor
         private void BuildTree(RenderTreeBuilder builder)
         {
             builder.OpenElement(0, Tag);
-            builder.AddAttribute(1, "Id", Id);
-            SetClassAttribute(builder);
-            SetStyleAttribute(builder);
-            SetEventsAttributes(builder);
-            RenderChildrenContent(builder);
+            SetIdAttribute(builder);
+            if (_components.Count > 0)
+            {
+                SetComponentsAttributes(builder);
+                SetComponentsContent(builder);
+            }
+            SetChildContent(builder);
             builder.CloseElement();
         }
 
-        //TODO: Optimize this
-        private void SetClassAttribute(RenderTreeBuilder builder)
+        private void SetIdAttribute(RenderTreeBuilder builder)
         {
-            string text = string.Empty;
-
-            if (Class != null)
+            if (!string.IsNullOrEmpty(Id))
             {
-                text = Class;
-                text += " ";
-            }
-
-            foreach (var item in _classes)
-            {
-                text += $"{item} ";
-            }
-
-            if (text != string.Empty)
-            {
-                builder.AddAttribute(3, "class", text);
+                builder.AddAttribute(1, "id", Id);
             }
         }
 
-        //TODO: Optimize this
-        private void SetStyleAttribute(RenderTreeBuilder builder)
+        private void SetComponentsAttributes(RenderTreeBuilder builder)
         {
-            string text = string.Empty;
-            foreach (var item in _styles)
+            foreach (IEditorComponent item in _components)
             {
-                text += $"{item.Key}:{item.Value};";
-            }
-
-            if (text != string.Empty)
-            {
-                builder.AddAttribute(4, "style", text);
+                item.SetAttributes(2, builder);
             }
         }
 
-        private void OnThemeChanged(Theme theme)
+        private void SetComponentsContent(RenderTreeBuilder builder)
         {
-            Refresh();
-        }
-
-        private void SetEventsAttributes(RenderTreeBuilder builder)
-        {
-            if (_mouseEvents.Count > 0)
+            builder.OpenRegion(3);
+            foreach (IEditorComponent item in _components)
             {
-                foreach (var evt in _mouseEvents)
-                {
-                    builder.AddAttribute(6, evt.Name, evt.Raise);
-                }
+                item.SetContent(builder);
             }
+            builder.CloseRegion();
         }
 
-        private void RenderChildrenContent(RenderTreeBuilder builder)
+        private void SetChildContent(RenderTreeBuilder builder)
         {
             if (_children.Count > 0)
             {
-                builder.OpenRegion(10);
+                builder.OpenRegion(4);
                 foreach (var child in _children)
                 {
-                    if (child.Enabled)
+                    if (child.Enable)
                     {
-                        builder.AddContent(0, child.GetContent());
+                        child.SetContent(builder);
                     }
                 }
                 builder.CloseRegion();
             }
-            builder.AddContent(11, ChildContent);
+            builder.AddContent(5, ChildContent);
         }
 
-        public IEditorWindow SetTag(string tag)
+        public IEditorWindow SetContent(RenderTreeBuilder builder)
         {
-            Tag = tag;
+            BuildTree(builder);
             return this;
         }
 
-        public IEditorWindow SetId(string id)
+        public IEditorWindow AddChild(IEditorWindow window)
         {
-            Id = id;
+            window.Parent = this;
+            _children.Add(window);
             return this;
         }
 
-        public IEditorWindow SetTitle(string title)
+        public IEditorWindow RemoveChild(IEditorWindow window)
         {
-            Title = title;
+            window.Parent = null;
+            _children.Remove(window);
             return this;
         }
 
-        public IEditorWindow SetChildContent(Action<RenderTreeBuilder> builder)
+        public bool HasChild(IEditorWindow window)
         {
-            ChildContent = builder.Invoke;
-            return this;
+            return _children.Contains(window);
         }
 
-        public RenderFragment GetContent()
+        public T? AddComponent<T>() where T : class, IEditorComponent, new()
         {
-            return BuildTree;
+            if (!_components.Any(c => c is T))
+            {
+                T component = new();
+                component.OnSetup(this);
+                _components.Add(component);
+                return component;
+            }
+            return null;
+        }
+
+        public T? RemoveComponent<T>() where T : class, IEditorComponent, new()
+        {
+            T? component = _components.FirstOrDefault(c => c is T) as T;
+            if (component != null)
+            {
+                _components.Remove(component);
+            }
+            return component;
+        }
+
+        public T? GetComponent<T>() where T : class, IEditorComponent, new()
+        {
+            return _components.FirstOrDefault(c => c is T) as T;
+        }
+
+        public T AddOrGetComponent<T>() where T : class, IEditorComponent, new()
+        {
+            if (!_components.Any(c => c is T))
+            {
+                T component = new();
+                component.OnSetup(this);
+                _components.Add(component);
+                return component;
+            }
+            else
+            {
+                return (T)_components.First(c => c is T);
+            }
+        }
+
+        public bool HasComponent<T>() where T : class, IEditorComponent, new()
+        {
+            return _components.Any(c => c is T);
         }
 
         public IEditorWindow Refresh()
         {
-            if (_instancedFromCode)
-            {
-                Parent?.Refresh();
-            }
-            else
-            {
-                StateHasChanged();
-            }
-            return this;
-        }
-
-        public IEditorWindow SetCssStyle(string property, string value)
-        {
-            _styles[property] = value;
-            return this;
-        }
-
-        public IEditorWindow AddCssClass(string name)
-        {
-            _classes.Add(name);
-            return this;
-        }
-
-        public IEditorWindow RemoveCssClass(string name)
-        {
-            _classes.Remove(name);
-            return this;
-        }
-
-        public IEditorWindow AddChildWindow(IEditorWindow child)
-        {
-            _children.Add(child);
-            child.SetParent(this);
-            return this;
-        }
-
-        public IEditorWindow RemoveChildWindow(IEditorWindow child)
-        {
-            _children.Remove(child);
-            child.SetParent(null);
-            return this;
-        }
-
-        public IEditorWindow SetParent(IEditorWindow? parent)
-        {
-            Parent = parent;
-            _instancedFromCode = parent != null;
-            return this;
-        }
-
-        public IEditorWindow SetRoot(IEditorWindow root)
-        {
-            Root = root;
-            return this;
-        }
-
-        public IEditorWindow AddState<T>(IEditorArgs[]? stateArgs = null)
-            where T : IEditorState, new()
-        {
-            if (_states.Any(x => x is T))
-            {
-                throw new Exception("This type of state already exists");
-            }
-
-            IEditorState state = new T();
-            state.OnSetup(this, stateArgs);
-            _states.Add(state);
-            return this;
-        }
-
-        public IEditorWindow ChangeState<T>
-        (
-            IEditorArgs[]? exitStateArgs = null,
-            IEditorArgs[]? enterStateArgs = null
-        ) where T : IEditorState, new()
-        {
-            _currentState?.OnExit(exitStateArgs);
-            _currentState = _states.FirstOrDefault(x => x is T);
-            _currentState!.OnEnter(enterStateArgs);
-            return this;
-        }
-
-        public bool IsCurrentState<T>() where T : IEditorState, new()
-        {
-            return _currentState is T;
-        }
-
-        public bool HasState<T>() where T : IEditorState, new()
-        {
-            return _states.Any(x => x is T);
-        }
-
-        public IEditorWindow AddTransition<T>
-        (
-            IEditorArgs[]? transitionArgs = null,
-            IEditorArgs[]? exitStateArgs = null,
-            IEditorArgs[]? enterStateArgs = null
-            ) where T : IEditorTransition, new()
-        {
-            var transition = new T();
-            transition.OnSetup(this, transitionArgs, exitStateArgs, enterStateArgs);
-            _transitions.Add(transition);
-            return this;
-        }
-
-        public IEditorWindow SubscribeMouseEvent<T>(Action<MouseEventArgs> action)
-            where T : IEditorEvent<MouseEventArgs>, new()
-        {
-            var evt = _mouseEvents.FirstOrDefault(x => x is T);
-            evt ??= new T();
-            evt.Subscribe(action);
-            _mouseEvents.Add(evt);
-            return this;
-        }
-
-        public IEditorWindow UnsubscribeMouseEvent<T>(Action<MouseEventArgs> action)
-            where T : IEditorEvent<MouseEventArgs>, new()
-        {
-            var evt = _mouseEvents.FirstOrDefault(x => x is T);
-            evt?.Unsubscribe(action);
+            StateHasChanged();
             return this;
         }
     }

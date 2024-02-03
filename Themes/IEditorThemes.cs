@@ -2,15 +2,16 @@ namespace Minerals.Editor.Themes
 {
     public interface IEditorThemes
     {
-        public Theme CurrentTheme { get; }
-        public string CurrentFilename { get; }
+        public ThemePackage Active { get; }
+        public ThemePackage[] Available { get; }
+        public ThemePackage[] Installed { get; }
 
-        public event Action<Theme>? ThemeChanged;
+        public event Action<ThemePackage, ThemePackage>? ThemeChanged;
 
-        public void SetCurrentTheme(Theme theme);
-        public void LoadAvailableThemes(Func<Theme[]> loader);
-        public Theme[] GetAvailableThemes();
-        public void LoadInstalledThemes(Func<Theme[]> loader);
-        public Theme[] GetInstalledThemes();
+        public Task<ThemePackage[]> LoadAvailableThemesAsync(string indexUrl);
+        public Task<ThemePackage[]> LoadInstalledThemesAsync(string indexUrl);
+
+        public void SetActive(ThemePackage theme);
+        public string GetStyleUrl(ThemePackage theme);
     }
 }

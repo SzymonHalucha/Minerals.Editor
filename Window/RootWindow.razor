@@ -1,0 +1,14 @@
+@inherits WindowComponentBase
+
+<HeadContent>
+    @if (IsThemable && Themes != null)
+    {
+        <link rel="stylesheet" href="@Themes.GetStyleUrl(@Themes.Active)">
+    }
+</HeadContent>
+
+<EditorWindow @ref="Window">
+    <CascadingValue Value="this" Name="Parent">
+        @ChildContent
+    </CascadingValue>
+</EditorWindow>
