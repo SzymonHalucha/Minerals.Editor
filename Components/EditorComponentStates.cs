@@ -2,8 +2,8 @@ namespace Minerals.Editor.Components
 {
     public class EditorComponentStates : EditorComponentBase
     {
-        private readonly List<IEditorState> _states = [];
         private readonly List<IEditorTransition> _transitions = [];
+        private readonly List<IEditorState> _states = [];
         private IEditorState? _currentState;
 
         public IEditorState? AddState<T>(IEditorArgs[]? stateArgs = null)

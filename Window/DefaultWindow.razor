@@ -2,6 +2,8 @@
 
 <EditorWindow @ref="Window">
     <CascadingValue Value="this" Name="Parent">
-        @ChildContent
+        <CascadingValue Value="@Themes" Name="Themes">
+            @ChildContent
+        </CascadingValue>
     </CascadingValue>
 </EditorWindow>

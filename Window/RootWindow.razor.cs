@@ -2,11 +2,6 @@ namespace Minerals.Editor.Window
 {
     public partial class RootWindow : WindowComponentBase
     {
-        [Parameter] public IEditorThemes? Themes { get; set; }
-        [Parameter] public string? ThemesIndex { get; set; }
-        [Parameter] public string? DefaultTheme { get; set; }
-        [Parameter] public bool IsThemable { get; set; } = false;
-
         protected override void OnWindowBuild()
         {
             var builder = new EditorWindowBuilder()
@@ -30,27 +25,15 @@ namespace Minerals.Editor.Window
                 .AddClasses(ThemeComponents.RootWindow)
                 .AddClasses(Class)
                 .AddDefaultStyle()
-                .AddDefaultState()
-                .Build();
+                .AddDefaultState();
 
             if (IsThemable)
             {
-                InvokeAsync(SetThemesManagerAsync);
+                builder.AddComponent<EditorComponentThemes>(out _);
+                builder.SetEditorThemes(Themes ?? ThemesInherited);
             }
-        }
 
-        private async Task SetThemesManagerAsync()
-        {
-            await Themes!.LoadAvailableThemesAsync(ThemesIndex!);
-            var theme = Themes.Available.FirstOrDefault(x => x.Id == DefaultTheme);
-            Window!.GetComponent<EditorComponentThemes>()!.SetThemes(Themes);
-            Themes.ThemeChanged += OnThemeChanged;
-            Themes.SetActive(theme ?? ThemePackage.Empty);
-        }
-
-        private void OnThemeChanged(ThemePackage oldTheme, ThemePackage newTheme)
-        {
-            InvokeAsync(StateHasChanged);
+            builder.Build();
         }
     }
 }

@@ -4,7 +4,7 @@ namespace Minerals.Editor.Components
     {
         private IEditorThemes? _themes;
 
-        public override void SetAttributes(int sequence, RenderTreeBuilder builder)
+        public override void AppendAttributes(int sequence, RenderTreeBuilder builder)
         {
             if (_themes != null && _themes.Active != null && _themes.Active != ThemePackage.Empty)
             {
@@ -12,9 +12,14 @@ namespace Minerals.Editor.Components
             }
         }
 
-        public void SetThemes(IEditorThemes themes)
+        public void AppendEditorThemes(IEditorThemes themes)
         {
             _themes = themes;
+        }
+
+        public IEditorThemes? GetEditorThemes()
+        {
+            return _themes;
         }
     }
 }

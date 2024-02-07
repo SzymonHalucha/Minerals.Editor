@@ -122,12 +122,12 @@ namespace Minerals.Editor.Builders
             return this;
         }
 
-        public IEditorWindowBuilder SetThemes(IEditorThemes? themes)
+        public IEditorWindowBuilder SetEditorThemes(IEditorThemes? themes)
         {
             if (themes != null)
             {
                 EditorComponentThemes component = _target!.GetComponent<EditorComponentThemes>()!;
-                component.SetThemes(themes);
+                component.AppendEditorThemes(themes);
             }
             return this;
         }
@@ -273,7 +273,9 @@ namespace Minerals.Editor.Builders
                 .SetTransform(transform)
                 .AddComponent<EditorComponentEvents>(out _)
                 .AddComponent<EditorComponentStyles>(out _)
+                .AddComponent<EditorComponentThemes>(out _)
                 .AddClasses(classes)
+                .SetEditorThemes(parent!.GetComponent<EditorComponentThemes>()?.GetEditorThemes())
                 .AddDefaultStyle();
         }
     }

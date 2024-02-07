@@ -4,7 +4,7 @@ namespace Minerals.Editor.Components
     {
         private readonly Dictionary<Type, List<IEditorEvent>> _events = [];
 
-        public override void SetAttributes(int sequence, RenderTreeBuilder builder)
+        public override void AppendAttributes(int sequence, RenderTreeBuilder builder)
         {
             if (_events.Count > 0)
             {

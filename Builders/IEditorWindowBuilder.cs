@@ -17,7 +17,7 @@ namespace Minerals.Editor.Builders
         public IEditorWindowBuilder AddClasses(string? classes);
         public IEditorWindowBuilder SetTransform(EditorTransform? transform);
         public IEditorWindowBuilder SetParent(IEditorWindow? parent);
-        public IEditorWindowBuilder SetThemes(IEditorThemes? themes);
+        public IEditorWindowBuilder SetEditorThemes(IEditorThemes? themes);
         public IEditorWindowBuilder SetTag(string? tag);
         public IEditorWindowBuilder SetId(string? id);
         public EditorWindow Build();

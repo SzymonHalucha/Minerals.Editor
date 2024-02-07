@@ -36,6 +36,12 @@ namespace Minerals.Editor.Window
                 .AddDefaultStyle()
                 .AddDefaultState();
 
+            if (IsThemable)
+            {
+                builder.AddComponent<EditorComponentThemes>(out _);
+                builder.SetEditorThemes(Themes ?? ThemesInherited);
+            }
+
             if (IsMovable)
             {
                 EditorWindow cmp = EditorWindowBuilder.BuildHeaderWindow(Window);

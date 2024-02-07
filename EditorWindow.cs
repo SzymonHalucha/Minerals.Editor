@@ -46,7 +46,7 @@ namespace Minerals.Editor
         {
             foreach (IEditorComponent item in _components)
             {
-                item.SetAttributes(2, builder);
+                item.AppendAttributes(2, builder);
             }
         }
 
@@ -55,7 +55,7 @@ namespace Minerals.Editor
             builder.OpenRegion(3);
             foreach (IEditorComponent item in _components)
             {
-                item.SetContent(builder);
+                item.AppendContent(builder);
             }
             builder.CloseRegion();
         }
@@ -107,7 +107,7 @@ namespace Minerals.Editor
             if (!_components.Any(c => c is T))
             {
                 T component = new();
-                component.OnSetup(this);
+                component.SetupComponent(this);
                 _components.Add(component);
                 return component;
             }
@@ -134,7 +134,7 @@ namespace Minerals.Editor
             if (!_components.Any(c => c is T))
             {
                 T component = new();
-                component.OnSetup(this);
+                component.SetupComponent(this);
                 _components.Add(component);
                 return component;
             }

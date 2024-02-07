@@ -3,6 +3,8 @@ namespace Minerals.Editor.Window
     public abstract class WindowComponentBase : ComponentBase, IWindowComponent
     {
         [CascadingParameter(Name = "Parent")] public IWindowComponent? Parent { get; set; }
+        [CascadingParameter(Name = "Themes")] public IEditorThemes? ThemesInherited { get; set; }
+        [Parameter] public IEditorThemes? Themes { get; set; }
         [Parameter] public RenderFragment? ChildContent { get; set; }
 
         [Parameter] public string? Id { get; set; }
@@ -10,6 +12,8 @@ namespace Minerals.Editor.Window
 
         [Parameter] public string? Tag { get; set; }
         [Parameter] public string? Class { get; set; }
+
+        [Parameter] public bool IsThemable { get; set; } = true;
 
         [Parameter] public EditorAnchor? Anchor { get; set; }
         [Parameter] public EditorUnit? Left { get; set; }

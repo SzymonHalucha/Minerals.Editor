@@ -5,7 +5,7 @@ namespace Minerals.Editor.Components
         private readonly List<string> _classes = [];
         private readonly Dictionary<string, string> _styles = [];
 
-        public override void SetAttributes(int sequence, RenderTreeBuilder builder)
+        public override void AppendAttributes(int sequence, RenderTreeBuilder builder)
         {
             string styleText = Root!.Transform.Build();
             //FIX: Optimize this for allocation (EditorComponentStyles - SetAttributes)
