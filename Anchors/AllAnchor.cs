@@ -10,7 +10,7 @@ namespace Minerals.Editor.Anchors
 
         public override void Build(StringBuilder builder, EditorTransform transform)
         {
-            AppendAllAnchors(builder, transform.Left!, transform.Right!, transform.Top!, transform.Bottom!);
+            AppendAllAnchors(builder, transform.Left, transform.Right, transform.Top, transform.Bottom);
         }
     }
 }

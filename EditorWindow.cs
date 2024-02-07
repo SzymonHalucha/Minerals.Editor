@@ -138,10 +138,8 @@ namespace Minerals.Editor
                 _components.Add(component);
                 return component;
             }
-            else
-            {
-                return (T)_components.First(c => c is T);
-            }
+
+            return (T)_components.First(c => c is T);
         }
 
         public bool HasComponent<T>() where T : class, IEditorComponent, new()

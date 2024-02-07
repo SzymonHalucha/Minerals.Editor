@@ -6,17 +6,17 @@ namespace Minerals.Editor.Anchors
 
         public override void TranslatePosition(EditorTransform transform, double deltaX, double deltaY)
         {
-            transform.Left = TranslateSingleUnit(transform.Left!, deltaX);
+            transform.Left = TranslateSingleUnit(transform.Left, deltaX);
         }
 
         public override void TranslateSize(EditorTransform transform, double deltaWidth, double deltaHeight)
         {
-            transform.Width = TranslateSingleUnit(transform.Width!, deltaWidth);
+            transform.Width = TranslateSingleUnit(transform.Width, deltaWidth);
         }
 
         public override void Build(StringBuilder builder, EditorTransform transform)
         {
-            AppendAllAnchors(builder, transform.Left!, transform.Width!, transform.Top!, transform.Bottom!);
+            AppendAllAnchors(builder, transform.Left, transform.Width, transform.Top, transform.Bottom);
         }
     }
 }

@@ -1,4 +1,3 @@
-
 namespace Minerals.Editor.Window
 {
     public partial class DefaultWindow : WindowComponentBase
@@ -8,8 +7,8 @@ namespace Minerals.Editor.Window
         [Parameter] public bool IsResizable { get; set; } = true;
         [Parameter] public bool IsVerticalResizable { get; set; } = true;
         [Parameter] public bool IsHorizontalResizable { get; set; } = true;
-        [Parameter] public bool IsSnappable { get; set; } = false;
-        [Parameter] public bool IsScrollable { get; set; } = false;
+        [Parameter] public bool IsSnappable { get; set; }
+        [Parameter] public bool IsScrollable { get; set; }
 
         protected override void OnWindowBuild()
         {
@@ -47,30 +46,36 @@ namespace Minerals.Editor.Window
                 EditorWindow cmp = EditorWindowBuilder.BuildHeaderWindow(Window);
                 builder.AddMovableFeature(cmp);
             }
+
             if (IsClosable)
             {
                 EditorWindow cmp = EditorWindowBuilder.BuildCloseWindow(Window);
                 builder.AddClosableFeature(cmp);
             }
+
             if (IsResizable)
             {
                 EditorWindow cmp = EditorWindowBuilder.BuildResizeWindow(Window);
                 builder.AddResizableFeature(cmp);
             }
+
             if (IsVerticalResizable)
             {
                 EditorWindow cmp = EditorWindowBuilder.BuildVerticalResizeWindow(Window);
                 builder.AddVerticalResizableFeature(cmp);
             }
+
             if (IsHorizontalResizable)
             {
                 EditorWindow cmp = EditorWindowBuilder.BuildHorizontalResizeWindow(Window);
                 builder.AddHorizontalResizableFeature(cmp);
             }
+
             if (IsSnappable)
             {
                 builder.AddSnappableFeature();
             }
+
             if (IsScrollable)
             {
                 builder.AddScrollableFeature();

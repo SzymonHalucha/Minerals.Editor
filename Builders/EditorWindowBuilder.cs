@@ -95,7 +95,7 @@ namespace Minerals.Editor.Builders
         {
             if (classes != null)
             {
-                StringSplitOptions splitOptions = StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries;
+                const StringSplitOptions splitOptions = StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries;
                 string[] list = classes.Split(separator: ' ', options: splitOptions);
 
                 EditorComponentStyles styles = _target!.GetComponent<EditorComponentStyles>()!;

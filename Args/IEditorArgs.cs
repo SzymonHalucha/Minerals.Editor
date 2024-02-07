@@ -1,4 +1,4 @@
 namespace Minerals.Editor.Args
 {
-    public interface IEditorArgs { }
+    public interface IEditorArgs;
 }

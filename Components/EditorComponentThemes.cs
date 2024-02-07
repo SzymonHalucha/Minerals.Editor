@@ -6,7 +6,7 @@ namespace Minerals.Editor.Components
 
         public override void AppendAttributes(int sequence, RenderTreeBuilder builder)
         {
-            if (_themes != null && _themes.Active != null && _themes.Active != ThemePackage.Empty)
+            if (_themes != null && _themes.Active != ThemePackage.Empty)
             {
                 builder.AddAttribute(sequence, _themes.Active.Id);
             }

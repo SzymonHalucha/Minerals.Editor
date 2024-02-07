@@ -43,7 +43,7 @@ namespace Minerals.Editor.Components
             where T1 : IEditorEvent<T2>, new()
             where T2 : notnull, new()
         {
-            var evt = _events![typeof(T2)].First(x => x is T1);
+            var evt = _events[typeof(T2)].First(x => x is T1);
             ((T1)evt).Unsubscribe(action);
         }
     }

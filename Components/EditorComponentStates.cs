@@ -25,7 +25,7 @@ namespace Minerals.Editor.Components
             IEditorArgs[]? enterStateArgs = null
         ) where T1 : IEditorState, new() where T2 : IEditorState, new()
         {
-            if (_currentState is T1 || _currentState == null)
+            if (_currentState is T1 or null)
             {
                 _currentState?.OnExit(exitStateArgs);
                 _currentState = _states.First(x => x is T2);

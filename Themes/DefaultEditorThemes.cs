@@ -1,6 +1,6 @@
 namespace Minerals.Editor.Themes
 {
-    public partial class DefaultEditorThemes : IEditorThemes
+    public class DefaultEditorThemes : IEditorThemes
     {
         public ThemePackage Active { get; private set; } = ThemePackage.Empty;
         public ThemePackage[] Available { get; private set; } = [];

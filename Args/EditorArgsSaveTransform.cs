@@ -1,4 +1,4 @@
 namespace Minerals.Editor.Args
 {
-    public class EditorArgsSaveTransform : IEditorArgs { }
+    public class EditorArgsSaveTransform : IEditorArgs;
 }
