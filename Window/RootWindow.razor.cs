@@ -13,7 +13,16 @@ namespace Minerals.Editor.Window
                 .BuildForReference(Window!)
                 .SetId(Id)
                 .SetTag(Tag)
-                .SetTransform(new(Size, Position))
+                .SetTransform(new()
+                {
+                    Anchor = Anchor ?? AllAnchor.Default,
+                    Left = Left ?? new PixelUnit(0),
+                    Right = Right ?? new PixelUnit(0),
+                    Top = Top ?? new PixelUnit(0),
+                    Bottom = Bottom ?? new PixelUnit(0),
+                    Width = Width ?? new PixelUnit(0),
+                    Height = Height ?? new PixelUnit(0)
+                })
                 .AddComponent<EditorComponentStyles>(out _)
                 .AddComponent<EditorComponentEvents>(out _)
                 .AddComponent<EditorComponentStates>(out _)

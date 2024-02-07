@@ -1,4 +1,5 @@
 global using System;
+global using System.Text;
 global using System.Linq;
 global using System.Net.Http;
 global using System.Net.Http.Json;
@@ -12,6 +13,7 @@ global using Minerals.Editor.Utils;
 global using Minerals.Editor.Themes;
 global using Minerals.Editor.Events;
 global using Minerals.Editor.Window;
+global using Minerals.Editor.Anchors;
 global using Minerals.Editor.Builders;
 global using Minerals.Editor.Components;
 global using Minerals.Editor.StateMachine;

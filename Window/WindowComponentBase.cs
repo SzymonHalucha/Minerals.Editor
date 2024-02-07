@@ -11,8 +11,13 @@ namespace Minerals.Editor.Window
         [Parameter] public string? Tag { get; set; }
         [Parameter] public string? Class { get; set; }
 
-        [Parameter] public EditorPoint Position { get; set; } = new();
-        [Parameter] public EditorPoint Size { get; set; } = new();
+        [Parameter] public EditorAnchor? Anchor { get; set; }
+        [Parameter] public EditorUnit? Left { get; set; }
+        [Parameter] public EditorUnit? Right { get; set; }
+        [Parameter] public EditorUnit? Top { get; set; }
+        [Parameter] public EditorUnit? Bottom { get; set; }
+        [Parameter] public EditorUnit? Width { get; set; }
+        [Parameter] public EditorUnit? Height { get; set; }
 
         public IEditorWindow? Window
         {

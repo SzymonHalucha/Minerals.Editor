@@ -1,3 +1,4 @@
+
 namespace Minerals.Editor.Window
 {
     public partial class DefaultWindow : WindowComponentBase
@@ -17,7 +18,16 @@ namespace Minerals.Editor.Window
                 .SetId(Id)
                 .SetTag(Tag)
                 .SetParent(Parent!.Window)
-                .SetTransform(new(Size, Position))
+                .SetTransform(new()
+                {
+                    Anchor = Anchor ?? TopLeftAnchor.Default,
+                    Left = Left ?? new PixelUnit(0),
+                    Right = Right ?? new PixelUnit(0),
+                    Top = Top ?? new PixelUnit(0),
+                    Bottom = Bottom ?? new PixelUnit(0),
+                    Width = Width ?? new PixelUnit(200),
+                    Height = Height ?? new PixelUnit(200)
+                })
                 .AddComponent<EditorComponentStyles>(out _)
                 .AddComponent<EditorComponentEvents>(out _)
                 .AddComponent<EditorComponentStates>(out _)

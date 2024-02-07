@@ -182,10 +182,11 @@ namespace Minerals.Editor.Builders
 
         public static EditorWindow BuildHeaderWindow(IEditorWindow? parent)
         {
-            EditorPoint position = new(0, 0);
-            EditorPoint size = new(100, 32, EditorUnit.Percent, EditorUnit.Pixel);
-            EditorAnchor anchor = EditorAnchor.Top | EditorAnchor.Left;
-            EditorTransform transform = new(size, position, anchor);
+            EditorTransform transform = new()
+            {
+                Anchor = HorizontalTopAnchor.Default,
+                Height = new PixelUnit(32)
+            };
             return CreateEventBaseComponent
             (
                 transform,
@@ -196,10 +197,12 @@ namespace Minerals.Editor.Builders
 
         public static EditorWindow BuildCloseWindow(IEditorWindow? parent)
         {
-            EditorPoint position = new(0, 0);
-            EditorPoint size = new(32, 32);
-            EditorAnchor anchor = EditorAnchor.Top | EditorAnchor.Right;
-            EditorTransform transform = new(size, position, anchor);
+            EditorTransform transform = new()
+            {
+                Anchor = TopRightAnchor.Default,
+                Width = new PixelUnit(32),
+                Height = new PixelUnit(32)
+            };
             return CreateEventBaseComponent
             (
                 transform,
@@ -210,10 +213,12 @@ namespace Minerals.Editor.Builders
 
         public static EditorWindow BuildResizeWindow(IEditorWindow? parent)
         {
-            EditorPoint position = new(0, 0);
-            EditorPoint size = new(16, 16);
-            EditorAnchor anchor = EditorAnchor.Bottom | EditorAnchor.Right;
-            EditorTransform transform = new(size, position, anchor);
+            EditorTransform transform = new()
+            {
+                Anchor = BottomRightAnchor.Default,
+                Width = new PixelUnit(16),
+                Height = new PixelUnit(16)
+            };
             return CreateEventBaseComponent
             (
                 transform,
@@ -224,10 +229,12 @@ namespace Minerals.Editor.Builders
 
         public static EditorWindow BuildVerticalResizeWindow(IEditorWindow? parent)
         {
-            EditorPoint position = new(0, 0);
-            EditorPoint size = new(80, 16, EditorUnit.Percent, EditorUnit.Pixel);
-            EditorAnchor anchor = EditorAnchor.Bottom | EditorAnchor.Right | EditorAnchor.Left;
-            EditorTransform transform = new(size, position, anchor);
+            EditorTransform transform = new()
+            {
+                Anchor = HorizontalBottomAnchor.Default,
+                Right = new PixelUnit(16),
+                Height = new PixelUnit(16)
+            };
             return CreateEventBaseComponent
             (
                 transform,
@@ -238,10 +245,13 @@ namespace Minerals.Editor.Builders
 
         public static EditorWindow BuildHorizontalResizeWindow(IEditorWindow? parent)
         {
-            EditorPoint position = new(0, 0);
-            EditorPoint size = new(16, 80, EditorUnit.Pixel, EditorUnit.Percent);
-            EditorAnchor anchor = EditorAnchor.Bottom | EditorAnchor.Top | EditorAnchor.Right;
-            EditorTransform transform = new(size, position, anchor);
+            EditorTransform transform = new()
+            {
+                Anchor = VerticalRightAnchor.Default,
+                Top = new PixelUnit(32),
+                Bottom = new PixelUnit(16),
+                Width = new PixelUnit(16)
+            };
             return CreateEventBaseComponent
             (
                 transform,

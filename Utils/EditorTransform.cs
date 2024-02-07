@@ -1,14 +1,36 @@
 namespace Minerals.Editor.Utils
 {
-    //FIX: Optimize this for performance allocation and better handling anchors (EditorTransform)
-    public class EditorTransform(EditorPoint size, EditorPoint position, EditorAnchor anchor)
+    public class EditorTransform
     {
-        public EditorPoint Size { get; set; } = size;
-        public EditorPoint Position { get; set; } = position;
-        public EditorAnchor Anchor { get; set; } = anchor;
+        public EditorAnchor Anchor { get; set; } = TopLeftAnchor.Default;
 
-        public EditorTransform(EditorPoint size, EditorPoint position) : this(size, position, EditorAnchor.Top | EditorAnchor.Left) { }
-        public EditorTransform(EditorPoint size) : this(size, new EditorPoint(0, 0)) { }
-        public EditorTransform() : this(new EditorPoint(100, 100)) { }
+        public EditorUnit Left { get; set; } = new PixelUnit(0);
+        public EditorUnit Right { get; set; } = new PixelUnit(0);
+        public EditorUnit Top { get; set; } = new PixelUnit(0);
+        public EditorUnit Bottom { get; set; } = new PixelUnit(0);
+
+        public EditorUnit Width { get; set; } = new PixelUnit(0);
+        public EditorUnit Height { get; set; } = new PixelUnit(0);
+
+        private readonly StringBuilder _builder = new();
+
+        public string Build()
+        {
+            _builder.Clear();
+            Anchor.Build(_builder, this);
+            return _builder.ToString();
+        }
+
+        public void TranslatePosition(double deltaX, double deltaY)
+        {
+            Anchor.TranslatePosition(this, deltaX, deltaY);
+        }
+
+        public void TranslateSize(double deltaWidth, double deltaHeight)
+        {
+            Anchor.TranslateSize(this, deltaWidth, deltaHeight);
+        }
+
+        public override string ToString() => Build();
     }
 }

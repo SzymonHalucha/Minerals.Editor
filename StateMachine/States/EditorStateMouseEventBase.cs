@@ -4,8 +4,12 @@ namespace Minerals.Editor.StateMachine.States
         where T : IEditorEvent<MouseEventArgs>, new()
     {
         protected IEditorWindow? Source;
-        protected EditorPoint Position;
-        protected EditorPoint Size;
+        protected EditorUnit? Left;
+        protected EditorUnit? Right;
+        protected EditorUnit? Top;
+        protected EditorUnit? Bottom;
+        protected EditorUnit? Width;
+        protected EditorUnit? Height;
 
         public override IEditorState OnSetup(IEditorWindow target, IEditorArgs[]? args = null)
         {
@@ -16,8 +20,12 @@ namespace Minerals.Editor.StateMachine.States
 
         public virtual IEditorState OnEnter(IEditorArgs[]? args = null)
         {
-            Size = Target!.Transform.Size;
-            Position = Target.Transform.Position;
+            Left = Target!.Transform.Left;
+            Right = Target.Transform.Right;
+            Top = Target.Transform.Top;
+            Bottom = Target.Transform.Bottom;
+            Width = Target.Transform.Width;
+            Height = Target.Transform.Height;
             Source!.GetComponent<EditorComponentEvents>()!.SubscribeEvent<T, MouseEventArgs>(DoAction);
             Source.Refresh();
             return this;
@@ -30,8 +38,12 @@ namespace Minerals.Editor.StateMachine.States
 
             if (!HasEditorArgs<EditorArgsSaveTransform>(args))
             {
-                Target!.Transform.Position = Position;
-                Target.Transform.Size = Size;
+                Target!.Transform.Left = Left!;
+                Target.Transform.Right = Right!;
+                Target.Transform.Top = Top!;
+                Target.Transform.Bottom = Bottom!;
+                Target.Transform.Width = Width!;
+                Target.Transform.Height = Height!;
             }
 
             return this;

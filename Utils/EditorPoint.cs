@@ -1,13 +1,14 @@
 namespace Minerals.Editor.Utils
 {
-    public readonly record struct EditorPoint(double X, double Y, EditorUnit XUnit, EditorUnit YUnit)
+    public readonly record struct EditorPoint(in EditorUnit X, in EditorUnit Y)
     {
-        public double Width => X;
-        public double Height => Y;
+        public readonly EditorUnit Width => X;
+        public readonly EditorUnit Height => Y;
 
-        public EditorPoint(double x, double y, EditorUnit unit) : this(x, y, unit, unit) { }
-        public EditorPoint(double x, double y) : this(x, y, EditorUnit.Pixel) { }
-        public EditorPoint(double x) : this(x, 0) { }
+        public EditorPoint(double x, double y) : this(new PixelUnit(x), new PixelUnit(y)) { }
+        public EditorPoint(EditorUnit x, double y) : this(x, new PixelUnit(y)) { }
+        public EditorPoint(double x, EditorUnit y) : this(new PixelUnit(x), y) { }
+        public EditorPoint(double value) : this(value, value) { }
         public EditorPoint() : this(0) { }
     }
 }

@@ -21,8 +21,7 @@ namespace Minerals.Editor.StateMachine.States
 
         protected override void DoAction(MouseEventArgs args)
         {
-            var old = Target!.Transform.Position;
-            Target.Transform.Position = new(old.X + args.MovementX, old.Y + args.MovementY);
+            Target!.Transform.TranslatePosition(args.MovementX, args.MovementY);
             Target.Parent!.Refresh();
         }
     }
