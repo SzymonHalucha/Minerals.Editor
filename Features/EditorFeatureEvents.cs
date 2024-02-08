@@ -1,6 +1,6 @@
-namespace Minerals.Editor.Components
+namespace Minerals.Editor.Features
 {
-    public class EditorComponentEvents : EditorComponentBase
+    public class EditorFeatureEvents : EditorFeatureBase
     {
         private readonly Dictionary<Type, List<IEditorEvent>> _events = [];
 

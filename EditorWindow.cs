@@ -6,12 +6,12 @@ namespace Minerals.Editor
         public string? Id { get; set; }
         public string Tag { get; set; } = "div";
 
-        public EditorTransform Transform { get; set; } = new();
+        public Transform Transform { get; set; } = new();
         public IEditorWindow? Parent { get; set; }
         public bool Enable { get; set; } = false;
 
         private readonly List<IEditorWindow> _children = [];
-        private readonly List<IEditorComponent> _components = [];
+        private readonly List<IEditorFeature> _features = [];
 
         protected override void BuildRenderTree(RenderTreeBuilder builder)
         {
@@ -24,17 +24,17 @@ namespace Minerals.Editor
         private void BuildTree(RenderTreeBuilder builder)
         {
             builder.OpenElement(0, Tag);
-            SetIdAttribute(builder);
-            if (_components.Count > 0)
+            AppendIdAttribute(builder);
+            if (_features.Count > 0)
             {
-                SetComponentsAttributes(builder);
-                SetComponentsContent(builder);
+                AppendFeaturesAttributes(builder);
+                AppendFeaturesContent(builder);
             }
-            SetChildContent(builder);
+            AppendChildContent(builder);
             builder.CloseElement();
         }
 
-        private void SetIdAttribute(RenderTreeBuilder builder)
+        private void AppendIdAttribute(RenderTreeBuilder builder)
         {
             if (!string.IsNullOrEmpty(Id))
             {
@@ -42,25 +42,25 @@ namespace Minerals.Editor
             }
         }
 
-        private void SetComponentsAttributes(RenderTreeBuilder builder)
+        private void AppendFeaturesAttributes(RenderTreeBuilder builder)
         {
-            foreach (IEditorComponent item in _components)
+            foreach (IEditorFeature item in _features)
             {
                 item.AppendAttributes(2, builder);
             }
         }
 
-        private void SetComponentsContent(RenderTreeBuilder builder)
+        private void AppendFeaturesContent(RenderTreeBuilder builder)
         {
             builder.OpenRegion(3);
-            foreach (IEditorComponent item in _components)
+            foreach (IEditorFeature item in _features)
             {
                 item.AppendContent(builder);
             }
             builder.CloseRegion();
         }
 
-        private void SetChildContent(RenderTreeBuilder builder)
+        private void AppendChildContent(RenderTreeBuilder builder)
         {
             if (_children.Count > 0)
             {
@@ -102,49 +102,49 @@ namespace Minerals.Editor
             return _children.Contains(window);
         }
 
-        public T? AddComponent<T>() where T : class, IEditorComponent, new()
+        public T? AddFeature<T>() where T : class, IEditorFeature, new()
         {
-            if (!_components.Any(c => c is T))
+            if (!_features.Any(c => c is T))
             {
-                T component = new();
-                component.SetupComponent(this);
-                _components.Add(component);
-                return component;
+                T feature = new();
+                feature.OnSetup(this);
+                _features.Add(feature);
+                return feature;
             }
             return null;
         }
 
-        public T? RemoveComponent<T>() where T : class, IEditorComponent, new()
+        public T? RemoveFeature<T>() where T : class, IEditorFeature, new()
         {
-            T? component = _components.FirstOrDefault(c => c is T) as T;
-            if (component != null)
+            T? feature = _features.FirstOrDefault(c => c is T) as T;
+            if (feature != null)
             {
-                _components.Remove(component);
+                _features.Remove(feature);
             }
-            return component;
+            return feature;
         }
 
-        public T? GetComponent<T>() where T : class, IEditorComponent, new()
+        public T? GetFeature<T>() where T : class, IEditorFeature, new()
         {
-            return _components.FirstOrDefault(c => c is T) as T;
+            return _features.FirstOrDefault(c => c is T) as T;
         }
 
-        public T AddOrGetComponent<T>() where T : class, IEditorComponent, new()
+        public T AddOrGetFeature<T>() where T : class, IEditorFeature, new()
         {
-            if (!_components.Any(c => c is T))
+            if (!_features.Any(c => c is T))
             {
-                T component = new();
-                component.SetupComponent(this);
-                _components.Add(component);
-                return component;
+                T feature = new();
+                feature.OnSetup(this);
+                _features.Add(feature);
+                return feature;
             }
 
-            return (T)_components.First(c => c is T);
+            return (T)_features.First(c => c is T);
         }
 
-        public bool HasComponent<T>() where T : class, IEditorComponent, new()
+        public bool HasFeature<T>() where T : class, IEditorFeature, new()
         {
-            return _components.Any(c => c is T);
+            return _features.Any(c => c is T);
         }
 
         public IEditorWindow Refresh()

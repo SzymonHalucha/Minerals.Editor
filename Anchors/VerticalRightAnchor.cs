@@ -1,20 +1,20 @@
 namespace Minerals.Editor.Anchors
 {
-    public record VerticalRightAnchor() : EditorAnchor("right:", "width:", "top:", "bottom:")
+    public record VerticalRightAnchor() : Anchor("right:", "width:", "top:", "bottom:")
     {
         public static VerticalRightAnchor Default { get; } = new();
 
-        public override void TranslatePosition(EditorTransform transform, double deltaX, double deltaY)
+        public override void TranslatePosition(Transform transform, double deltaX, double deltaY)
         {
             transform.Right = TranslateSingleUnit(transform.Right, deltaX);
         }
 
-        public override void TranslateSize(EditorTransform transform, double deltaWidth, double deltaHeight)
+        public override void TranslateSize(Transform transform, double deltaWidth, double deltaHeight)
         {
             transform.Width = TranslateSingleUnit(transform.Width, deltaWidth);
         }
 
-        public override void Build(StringBuilder builder, EditorTransform transform)
+        public override void Build(StringBuilder builder, Transform transform)
         {
             AppendAllAnchors(builder, transform.Right, transform.Width, transform.Top, transform.Bottom);
         }

@@ -1,16 +1,16 @@
 namespace Minerals.Editor.Utils
 {
-    public class EditorTransform
+    public class Transform
     {
-        public EditorAnchor Anchor { get; set; } = TopLeftAnchor.Default;
+        public Anchor Anchor { get; set; } = TopLeftAnchor.Default;
 
-        public EditorUnit Left { get; set; } = new PixelUnit(0);
-        public EditorUnit Right { get; set; } = new PixelUnit(0);
-        public EditorUnit Top { get; set; } = new PixelUnit(0);
-        public EditorUnit Bottom { get; set; } = new PixelUnit(0);
+        public Unit Left { get; set; } = new PixelUnit(0);
+        public Unit Right { get; set; } = new PixelUnit(0);
+        public Unit Top { get; set; } = new PixelUnit(0);
+        public Unit Bottom { get; set; } = new PixelUnit(0);
 
-        public EditorUnit Width { get; set; } = new PixelUnit(0);
-        public EditorUnit Height { get; set; } = new PixelUnit(0);
+        public Unit Width { get; set; } = new PixelUnit(0);
+        public Unit Height { get; set; } = new PixelUnit(0);
 
         private readonly StringBuilder _builder = new();
 

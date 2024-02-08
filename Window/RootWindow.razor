@@ -1,9 +1,0 @@
-@inherits WindowComponentBase
-
-<EditorWindow @ref="Window">
-    <CascadingValue Value="this" Name="Parent">
-        <CascadingValue Value="@Themes" Name="Themes">
-            @ChildContent
-        </CascadingValue>
-    </CascadingValue>
-</EditorWindow>

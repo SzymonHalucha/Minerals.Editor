@@ -1,6 +1,6 @@
 namespace Minerals.Editor.StateMachine.States
 {
-    public class EditorStateClosed : EditorStateMachineBase, IEditorState
+    public class CloseState : StateMachineBase, IEditorState
     {
         public IEditorState OnEnter(IEditorArgs[]? args = null)
         {

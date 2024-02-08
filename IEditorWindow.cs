@@ -6,7 +6,7 @@ namespace Minerals.Editor
         public string? Id { get; set; }
         public string Tag { get; set; }
 
-        public EditorTransform Transform { get; set; }
+        public Transform Transform { get; set; }
         public IEditorWindow? Parent { get; set; }
         public bool Enable { get; set; }
 
@@ -16,11 +16,11 @@ namespace Minerals.Editor
         public IEditorWindow RemoveChild(IEditorWindow window);
         public bool HasChild(IEditorWindow window);
 
-        public T? AddComponent<T>() where T : class, IEditorComponent, new();
-        public T? RemoveComponent<T>() where T : class, IEditorComponent, new();
-        public T? GetComponent<T>() where T : class, IEditorComponent, new();
-        public T AddOrGetComponent<T>() where T : class, IEditorComponent, new();
-        public bool HasComponent<T>() where T : class, IEditorComponent, new();
+        public T? AddFeature<T>() where T : class, IEditorFeature, new();
+        public T? RemoveFeature<T>() where T : class, IEditorFeature, new();
+        public T? GetFeature<T>() where T : class, IEditorFeature, new();
+        public T AddOrGetFeature<T>() where T : class, IEditorFeature, new();
+        public bool HasFeature<T>() where T : class, IEditorFeature, new();
 
         public IEditorWindow Refresh();
     }

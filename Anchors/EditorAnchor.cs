@@ -1,12 +1,12 @@
 namespace Minerals.Editor.Anchors
 {
-    public abstract record EditorAnchor(string Anchor1, string Anchor2, string Anchor3, string Anchor4)
+    public abstract record Anchor(string Anchor1, string Anchor2, string Anchor3, string Anchor4)
     {
-        public abstract void TranslatePosition(EditorTransform transform, double deltaX, double deltaY);
-        public abstract void TranslateSize(EditorTransform transform, double deltaWidth, double deltaHeight);
-        public abstract void Build(StringBuilder builder, EditorTransform transform);
+        public abstract void TranslatePosition(Transform transform, double deltaX, double deltaY);
+        public abstract void TranslateSize(Transform transform, double deltaWidth, double deltaHeight);
+        public abstract void Build(StringBuilder builder, Transform transform);
 
-        protected static EditorUnit TranslateSingleUnit(EditorUnit unit1, double delta)
+        protected static Unit TranslateSingleUnit(Unit unit1, double delta)
         {
             if (delta == 0)
             {
@@ -29,8 +29,7 @@ namespace Minerals.Editor.Anchors
             }
         }
 
-        protected void AppendAllAnchors(StringBuilder builder, EditorUnit unit1, EditorUnit unit2, EditorUnit unit3,
-            EditorUnit unit4)
+        protected void AppendAllAnchors(StringBuilder builder, Unit unit1, Unit unit2, Unit unit3, Unit unit4)
         {
             AppendSingleAnchor(builder, unit1, Anchor1);
             AppendSingleAnchor(builder, unit2, Anchor2);
@@ -38,7 +37,7 @@ namespace Minerals.Editor.Anchors
             AppendSingleAnchor(builder, unit4, Anchor4);
         }
 
-        private static void AppendSingleAnchor(StringBuilder builder, EditorUnit unit, string anchor)
+        private static void AppendSingleAnchor(StringBuilder builder, Unit unit, string anchor)
         {
             builder.Append(anchor);
             switch (unit)

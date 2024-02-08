@@ -1,6 +1,6 @@
-namespace Minerals.Editor.Components
+namespace Minerals.Editor.Features
 {
-    public class EditorComponentStates : EditorComponentBase
+    public class EditorFeatureStates : EditorFeatureBase
     {
         private readonly List<IEditorTransition> _transitions = [];
         private readonly List<IEditorState> _states = [];

@@ -1,6 +1,6 @@
 namespace Minerals.Editor.StateMachine.Transitions
 {
-    public interface IEditorTransition : IEditorStateMachine
+    public interface IEditorTransition : IStateMachine
     {
         public IEditorTransition SetAdditionalArgs(IEditorArgs[]? exitStateArgs = null, IEditorArgs[]? enterStateArgs = null);
     }

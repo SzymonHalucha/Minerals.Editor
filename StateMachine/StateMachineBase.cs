@@ -1,16 +1,16 @@
 namespace Minerals.Editor.StateMachine
 {
-    public abstract class EditorStateMachineBase : IEditorStateMachine
+    public abstract class StateMachineBase : IStateMachine
     {
         protected IEditorWindow? Target;
 
-        public virtual IEditorStateMachine OnSetup(IEditorWindow target, IEditorArgs[]? args = null)
+        public virtual IStateMachine OnSetup(IEditorWindow target, IEditorArgs[]? args = null)
         {
             Target = target;
             return this;
         }
 
-        public virtual IEditorStateMachine OnDestroy()
+        public virtual IStateMachine OnDestroy()
         {
             return this;
         }

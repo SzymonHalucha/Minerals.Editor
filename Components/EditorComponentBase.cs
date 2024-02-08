@@ -1,22 +1,44 @@
 namespace Minerals.Editor.Components
 {
-    public abstract class EditorComponentBase : IEditorComponent
+    public abstract class EditorComponentBase : ComponentBase, IEditorComponent
     {
-        public IEditorWindow? Root { get; protected set; }
+        [CascadingParameter(Name = "Parent")] public IEditorComponent? ParentInherited { get; set; }
+        [CascadingParameter(Name = "Themes")] public IEditorThemes? ThemesInherited { get; set; }
 
-        public void SetupComponent(IEditorWindow root)
+        [Parameter] public IEditorComponent? Parent { get; set; }
+        [Parameter] public IEditorThemes? Themes { get; set; }
+        [Parameter] public RenderFragment? ChildContent { get; set; }
+
+        [Parameter] public string? Id { get; set; }
+        [Parameter] public string? Title { get; set; }
+
+        [Parameter] public string? Tag { get; set; }
+        [Parameter] public string? Class { get; set; }
+
+        [Parameter] public bool IsThemable { get; set; } = true;
+
+        [Parameter] public Anchor? Anchor { get; set; }
+        [Parameter] public Unit? Left { get; set; }
+        [Parameter] public Unit? Right { get; set; }
+        [Parameter] public Unit? Top { get; set; }
+        [Parameter] public Unit? Bottom { get; set; }
+        [Parameter] public Unit? Width { get; set; }
+        [Parameter] public Unit? Height { get; set; }
+
+        public IEditorWindow? Window
         {
-            Root ??= root;
+            get => _window;
+            protected set => OnWindowParameterSet(value);
         }
 
-        public virtual void AppendAttributes(int sequence, RenderTreeBuilder builder)
-        {
+        private IEditorWindow? _window;
 
+        private void OnWindowParameterSet(IEditorWindow? window)
+        {
+            _window = window;
+            OnComponentBuild();
         }
 
-        public virtual void AppendContent(RenderTreeBuilder builder)
-        {
-
-        }
+        protected abstract void OnComponentBuild();
     }
 }

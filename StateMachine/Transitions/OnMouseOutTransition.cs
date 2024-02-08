@@ -1,6 +1,6 @@
 namespace Minerals.Editor.StateMachine.Transitions
 {
-    public class EditorTransitionOnMouseOver<T1, T2> : EditorTransitionMouseEventBase<T1, T2, EditorEventOnMouseOver>
+    public class OnMouseOutTransition<T1, T2> : MouseEventBaseTransition<T1, T2, EditorEventOnMouseOut>
         where T1 : IEditorState, new()
         where T2 : IEditorState, new();
 }

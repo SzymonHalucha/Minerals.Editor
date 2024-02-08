@@ -1,9 +1,9 @@
-namespace Minerals.Editor.Components
+namespace Minerals.Editor.Features
 {
-    public class EditorComponentStyles : EditorComponentBase
+    public class EditorFeatureStyles : EditorFeatureBase
     {
-        private readonly List<string> _classes = [];
         private readonly Dictionary<string, string> _styles = [];
+        private readonly List<string> _classes = [];
 
         public override void AppendAttributes(int sequence, RenderTreeBuilder builder)
         {

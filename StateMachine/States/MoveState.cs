@@ -1,13 +1,13 @@
 namespace Minerals.Editor.StateMachine.States
 {
-    public class EditorStateMoving : EditorStateMouseEventBase<EditorEventOnMouseMove>
+    public class MoveState : MouseEventBaseState<EditorEventOnMouseMove>
     {
         public override IEditorState OnEnter(IEditorArgs[]? args = null)
         {
             base.OnEnter(args);
             if (HasEditorArgs<EditorArgsIgnoreEvents>(args))
             {
-                Target!.GetComponent<EditorComponentStyles>()!.AddStyle("pointer-events", "none");
+                Target!.GetFeature<EditorFeatureStyles>()!.AddStyle("pointer-events", "none");
             }
             return this;
         }
@@ -15,7 +15,7 @@ namespace Minerals.Editor.StateMachine.States
         public override IEditorState OnExit(IEditorArgs[]? args = null)
         {
             base.OnExit(args);
-            Target!.GetComponent<EditorComponentStyles>()!.AddStyle("pointer-events", "all");
+            Target!.GetFeature<EditorFeatureStyles>()!.AddStyle("pointer-events", "all");
             return this;
         }
 

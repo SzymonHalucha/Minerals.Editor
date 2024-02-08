@@ -1,10 +1,10 @@
 namespace Minerals.Editor.StateMachine.States
 {
-    public class EditorStateResizing : EditorStateMouseEventBase<EditorEventOnMouseMove>
+    public class VerticalResizeState : MouseEventBaseState<EditorEventOnMouseMove>
     {
         protected override void DoAction(MouseEventArgs args)
         {
-            Target!.Transform.TranslateSize(args.MovementX, args.MovementY);
+            Target!.Transform.TranslateSize(0, args.MovementY);
             Target.Parent!.Refresh();
         }
     }
