@@ -4,14 +4,16 @@ namespace Minerals.Editor.Builders
     {
         public EditorWindow BuildHeaderWindow(IEditorWindow? parent)
         {
-            Transform transform = new()
+            var anchor = new HorizontalTopAnchor
             {
-                Anchor = HorizontalTopAnchor.Default,
+                Left = new PixelUnit(0),
+                Right = new PixelUnit(32),
+                Top = new PixelUnit(0),
                 Height = new PixelUnit(32)
             };
             return CreateEventBaseWindow
             (
-                transform,
+                anchor,
                 parent,
                 ThemeSelectors.EditorHeader
             ).Build();
@@ -19,15 +21,16 @@ namespace Minerals.Editor.Builders
 
         public EditorWindow BuildCloseWindow(IEditorWindow? parent)
         {
-            Transform transform = new()
+            var anchor = new TopRightAnchor
             {
-                Anchor = TopRightAnchor.Default,
+                Right = new PixelUnit(0),
+                Top = new PixelUnit(0),
                 Width = new PixelUnit(32),
                 Height = new PixelUnit(32)
             };
             return CreateEventBaseWindow
             (
-                transform,
+                anchor,
                 parent,
                 ThemeSelectors.EditorClose
             ).Build();
@@ -35,15 +38,16 @@ namespace Minerals.Editor.Builders
 
         public EditorWindow BuildResizeWindow(IEditorWindow? parent)
         {
-            Transform transform = new()
+            var anchor = new BottomRightAnchor
             {
-                Anchor = BottomRightAnchor.Default,
+                Right = new PixelUnit(0),
+                Bottom = new PixelUnit(0),
                 Width = new PixelUnit(16),
                 Height = new PixelUnit(16)
             };
             return CreateEventBaseWindow
             (
-                transform,
+                anchor,
                 parent,
                 ThemeSelectors.EditorResize
             ).Build();
@@ -51,15 +55,16 @@ namespace Minerals.Editor.Builders
 
         public EditorWindow BuildVerticalResizeWindow(IEditorWindow? parent)
         {
-            Transform transform = new()
+            var anchor = new HorizontalBottomAnchor
             {
-                Anchor = HorizontalBottomAnchor.Default,
+                Left = new PixelUnit(0),
                 Right = new PixelUnit(16),
+                Bottom = new PixelUnit(0),
                 Height = new PixelUnit(16)
             };
             return CreateEventBaseWindow
             (
-                transform,
+                anchor,
                 parent,
                 ThemeSelectors.EditorVerticalResize
             ).Build();
@@ -67,16 +72,16 @@ namespace Minerals.Editor.Builders
 
         public EditorWindow BuildHorizontalResizeWindow(IEditorWindow? parent)
         {
-            Transform transform = new()
+            var anchor = new VerticalRightAnchor
             {
-                Anchor = VerticalRightAnchor.Default,
+                Right = new PixelUnit(0),
+                Width = new PixelUnit(16),
                 Top = new PixelUnit(32),
-                Bottom = new PixelUnit(16),
-                Width = new PixelUnit(16)
+                Bottom = new PixelUnit(16)
             };
             return CreateEventBaseWindow
             (
-                transform,
+                anchor,
                 parent,
                 ThemeSelectors.EditorHorizontalResize
             ).Build();
@@ -84,7 +89,7 @@ namespace Minerals.Editor.Builders
 
         private static EditorWindowBuilder CreateEventBaseWindow
         (
-            Transform transform,
+            IEditorAnchor anchor,
             IEditorWindow? parent = null,
             string? classes = null
         )
@@ -92,7 +97,7 @@ namespace Minerals.Editor.Builders
             return (EditorWindowBuilder)new EditorWindowBuilder()
                 .CreateNew()
                 .SetParent(parent)
-                .SetTransform(transform)
+                .SetAnchor(anchor)
                 .AddFeature<EditorFeatureEvents>(out _)
                 .AddFeature<EditorFeatureStyles>(out _)
                 .AddFeature<EditorFeatureThemes>(out _)

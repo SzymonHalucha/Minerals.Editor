@@ -1,22 +1,31 @@
 namespace Minerals.Editor.Anchors
 {
-    public record HorizontalTopAnchor() : Anchor("left:", "right:", "top:", "height:")
+    public class HorizontalTopAnchor : EditorAnchorBase
     {
-        public static HorizontalTopAnchor Default { get; } = new();
+        public override string[] Anchors => ["left:", "right:", "top:", "height:"];
 
-        public override void TranslatePosition(Transform transform, double deltaX, double deltaY)
+        public Unit Left { get => Units[0]; set => Units[0] = value; }
+        public Unit Right { get => Units[1]; set => Units[1] = value; }
+        public Unit Top { get => Units[2]; set => Units[2] = value; }
+        public Unit Height { get => Units[3]; set => Units[3] = value; }
+
+        public override void AddDeltaPosition(params double[] values)
         {
-            transform.Top = TranslateSingleUnit(transform.Top, deltaY);
+            Left = UpdateUnit(Left, values[0]);
+            Right = UpdateUnit(Right, values[1]);
+            Top = UpdateUnit(Top, values[2]);
         }
 
-        public override void TranslateSize(Transform transform, double deltaWidth, double deltaHeight)
+        public override void AddDeltaSize(params double[] values)
         {
-            transform.Height = TranslateSingleUnit(transform.Height, deltaHeight);
+            Height = UpdateUnit(Height, values[0]);
         }
 
-        public override void Build(StringBuilder builder, Transform transform)
+        public override string Build()
         {
-            AppendAllAnchors(builder, transform.Left, transform.Right, transform.Top, transform.Height);
+            Builder.Clear();
+            AppendAllAnchors(Builder, Left, Right, Top, Height);
+            return Builder.ToString();
         }
     }
 }

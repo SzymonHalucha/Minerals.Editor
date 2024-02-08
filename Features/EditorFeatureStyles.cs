@@ -7,7 +7,7 @@ namespace Minerals.Editor.Features
 
         public override void AppendAttributes(int sequence, RenderTreeBuilder builder)
         {
-            string styleText = Root!.Transform.Build();
+            string styleText = Root!.Anchor!.Build();
             //FIX: Optimize this for allocation (EditorComponentStyles - SetAttributes)
             if (_styles.Count > 0)
             {

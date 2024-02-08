@@ -4,7 +4,7 @@ namespace Minerals.Editor.StateMachine.States
     {
         protected override void DoAction(MouseEventArgs args)
         {
-            Target!.Transform.TranslateSize(args.MovementX, args.MovementY);
+            Target!.Anchor!.AddDeltaSize(args.MovementX, args.MovementY);
             Target.Parent!.Refresh();
         }
     }

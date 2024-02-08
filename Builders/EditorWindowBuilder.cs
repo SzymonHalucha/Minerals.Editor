@@ -106,12 +106,15 @@ namespace Minerals.Editor.Builders
             return this;
         }
 
-        public IEditorWindowBuilder SetTransform(Transform? transform)
+        public IEditorWindowBuilder SetAnchor(IEditorAnchor? anchor)
         {
-            if (transform != null)
+            _target!.Anchor = anchor ?? new TopLeftAnchor()
             {
-                _target!.Transform = transform;
-            }
+                Left = new PixelUnit(0),
+                Width = new PixelUnit(200),
+                Top = new PixelUnit(0),
+                Height = new PixelUnit(200)
+            };
             return this;
         }
 

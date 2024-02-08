@@ -1,20 +1,29 @@
 namespace Minerals.Editor.Utils
 {
-    public abstract record Unit(in string Text)
+    public abstract record Unit(string Text)
     {
-        public static OperatorUnit operator +(Unit left, Unit right) =>
+        public static EquationUnit operator +(Unit left, Unit right) =>
             new(left, right, "+");
-        public static OperatorUnit operator -(Unit left, Unit right) =>
+        public static EquationUnit operator -(Unit left, Unit right) =>
             new(left, right, "-");
-        public static OperatorUnit operator *(Unit left, Unit right) =>
+        public static EquationUnit operator *(Unit left, Unit right) =>
             new(left, right, "*");
-        public static OperatorUnit operator /(Unit left, Unit right) =>
+        public static EquationUnit operator /(Unit left, Unit right) =>
             new(left, right, "/");
 
         public abstract void Build(StringBuilder builder);
     }
 
-    public record OperatorUnit(in Unit Left, in Unit Right, in string Text) : Unit(Text)
+    public abstract record NumberUnit(double Number, string Text) : Unit(Text)
+    {
+        public override void Build(StringBuilder builder)
+        {
+            builder.Append(Number);
+            builder.Append(Text);
+        }
+    }
+
+    public record EquationUnit(Unit Left, Unit Right, string Text) : Unit(Text)
     {
         public override void Build(StringBuilder builder)
         {
@@ -23,15 +32,6 @@ namespace Minerals.Editor.Utils
             builder.Append(Text);
             Right.Build(builder);
             builder.Append(')');
-        }
-    }
-
-    public abstract record NumberUnit(double Number, in string Text) : Unit(Text)
-    {
-        public override void Build(StringBuilder builder)
-        {
-            builder.Append(Number);
-            builder.Append(Text);
         }
     }
 

@@ -17,16 +17,7 @@ namespace Minerals.Editor.Components
                 .SetId(Id)
                 .SetTag(Tag)
                 .SetParent(Parent?.Window ?? ParentInherited?.Window)
-                .SetTransform(new()
-                {
-                    Anchor = Anchor ?? TopLeftAnchor.Default,
-                    Left = Left ?? new PixelUnit(0),
-                    Right = Right ?? new PixelUnit(0),
-                    Top = Top ?? new PixelUnit(0),
-                    Bottom = Bottom ?? new PixelUnit(0),
-                    Width = Width ?? new PixelUnit(200),
-                    Height = Height ?? new PixelUnit(200)
-                })
+                .SetAnchor(Anchor)
                 .AddFeature<EditorFeatureStyles>(out _)
                 .AddFeature<EditorFeatureEvents>(out _)
                 .AddFeature<EditorFeatureStates>(out _)

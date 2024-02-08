@@ -6,7 +6,7 @@ namespace Minerals.Editor
         public string? Id { get; set; }
         public string Tag { get; set; }
 
-        public Transform Transform { get; set; }
+        public IEditorAnchor? Anchor { get; set; }
         public IEditorWindow? Parent { get; set; }
         public bool Enable { get; set; }
 

@@ -17,13 +17,7 @@ namespace Minerals.Editor.Components
 
         public bool IsThemable { get; set; }
 
-        public Anchor? Anchor { get; set; }
-        public Unit? Left { get; set; }
-        public Unit? Right { get; set; }
-        public Unit? Top { get; set; }
-        public Unit? Bottom { get; set; }
-        public Unit? Width { get; set; }
-        public Unit? Height { get; set; }
+        public IEditorAnchor? Anchor { get; set; }
 
         public IEditorWindow? Window { get; }
     }

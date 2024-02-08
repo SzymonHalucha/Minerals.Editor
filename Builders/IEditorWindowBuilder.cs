@@ -15,7 +15,7 @@ namespace Minerals.Editor.Builders
         public IEditorWindowBuilder AddSnapState();
         public IEditorWindowBuilder AddScrollState();
         public IEditorWindowBuilder AddClasses(string? classes);
-        public IEditorWindowBuilder SetTransform(Transform? transform);
+        public IEditorWindowBuilder SetAnchor(IEditorAnchor? anchor);
         public IEditorWindowBuilder SetParent(IEditorWindow? parent);
         public IEditorWindowBuilder SetEditorThemes(IEditorThemes? themes);
         public IEditorWindowBuilder SetTag(string? tag);

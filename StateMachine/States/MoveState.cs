@@ -21,7 +21,7 @@ namespace Minerals.Editor.StateMachine.States
 
         protected override void DoAction(MouseEventArgs args)
         {
-            Target!.Transform.TranslatePosition(args.MovementX, args.MovementY);
+            Target!.Anchor!.AddDeltaPosition(args.MovementX, args.MovementY);
             Target.Parent!.Refresh();
         }
     }

@@ -4,12 +4,7 @@ namespace Minerals.Editor.StateMachine.States
         where T : IEditorEvent<MouseEventArgs>, new()
     {
         protected IEditorWindow? Source;
-        protected Unit? Left;
-        protected Unit? Right;
-        protected Unit? Top;
-        protected Unit? Bottom;
-        protected Unit? Width;
-        protected Unit? Height;
+        protected Unit[] AnchorUnits = new Unit[4];
 
         public override IEditorState OnSetup(IEditorWindow target, IEditorArgs[]? args = null)
         {
@@ -20,12 +15,10 @@ namespace Minerals.Editor.StateMachine.States
 
         public virtual IEditorState OnEnter(IEditorArgs[]? args = null)
         {
-            Left = Target!.Transform.Left;
-            Right = Target.Transform.Right;
-            Top = Target.Transform.Top;
-            Bottom = Target.Transform.Bottom;
-            Width = Target.Transform.Width;
-            Height = Target.Transform.Height;
+            AnchorUnits[0] = Target!.Anchor!.Units[0];
+            AnchorUnits[1] = Target.Anchor.Units[1];
+            AnchorUnits[2] = Target.Anchor.Units[2];
+            AnchorUnits[3] = Target.Anchor.Units[3];
             Source!.GetFeature<EditorFeatureEvents>()!.SubscribeEvent<T, MouseEventArgs>(DoAction);
             Source.Refresh();
             return this;
@@ -38,12 +31,10 @@ namespace Minerals.Editor.StateMachine.States
 
             if (!HasEditorArgs<EditorArgsSaveTransform>(args))
             {
-                Target!.Transform.Left = Left!;
-                Target.Transform.Right = Right!;
-                Target.Transform.Top = Top!;
-                Target.Transform.Bottom = Bottom!;
-                Target.Transform.Width = Width!;
-                Target.Transform.Height = Height!;
+                Target!.Anchor!.Units[0] = AnchorUnits[0];
+                Target.Anchor.Units[1] = AnchorUnits[1];
+                Target.Anchor.Units[2] = AnchorUnits[2];
+                Target.Anchor.Units[3] = AnchorUnits[3];
             }
 
             return this;
